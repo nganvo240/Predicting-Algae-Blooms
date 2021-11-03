@@ -1,0 +1,74 @@
+Nhóm 11- Dự đoán tảo "nở hoa" (Predicting Algae Blooms)
+
+1. Thông tin nhóm
+	- Các thành viên trong nhóm:
+		41-Lê Đỗ Trà My-18133030
+		43-Võ Thị Thanh Ngân-18133033
+		39-Huỳnh Thị Hương Ly-18133029
+		75-Phan Thành Trung-18133059
+
+2. Giới thiệu sơ lược về project
+	- Tên project, đường link đến project:
+		*Tên project: Dự đoán tảo "nở hoa" (Predicting Algae Blooms), tham khảo từ "Data Mining with R Learning with Case Studies, Second Edition by Torgo, Luís (z-lib.org)"
+		*Link dataset: https://drive.google.com/drive/folders/1JbtBEFj2dj2Ih0crDsAzoII7DNp0_VAZ?usp=sharing (tập data có trong thư viện R được nhóm tải và đẩy lên google drive)
+	- Mô tả ngắn gọn bài toán mà nhóm muốn giải quyết: Sự xuất hiện dày đặt của tảo ( mật độ tảo tăng nhanh chóng- gọi là "nở hoa"),  ảnh tưởng đến môi trường sống của 
+sinh vật dưới nước và chất lượng nguồn nước. Việc theo dõi và thực hiện dự báo sớm về sự nở hoa của tảo là cần thiết để nâng cao chất lượng các dòng sông.
+Với mục tiêu giải quyết vấn đề dự đoán này, một số mẫu nước được thu thập ở các con sông khác nhau ở Châu Âu vào những thời điểm khác nhau trong một năm.
+Ngoài ra, kết quả của nghiên cứu này được mong đợi là có thể cung cấp sự hiểu biết tốt hơn về các yếu tố ảnh hưởng đến tần số tảo. Cụ thể, muốn hiểu cách các tần số này 
+liên quan đến các thuộc tính hóa học nhất định của mẫu nước như cũng như các đặc điểm khác của mẫu (như mùa trong năm, loại sông,...).
+
+	- Mô tả ngắn gọn về tập dữ liệu: Dữ liệu gồm hai tệp riêng biệt (“Analysis.txt” và “Eval.txt”). Mỗi tệp chứa dữ liệu liên quan đến một tập hợp nước mẫu:
+		* Analysis.txt: chứa dữ liệu liên quan đến 200 mẫu nước được thu thập tại các dòng sông khác nhau ở Châu Âu(mỗi quan sát trong bộ dữ liệu có sẵn thực tế là tổng hợp của một số mẫu nước được thu thập từ cùng một con sông trong khoảng thời gian 3 tháng,
+trong cùng một mùa trong năm), mỗi mẫu nước được mô tả bởi 11 biến:
+			+ 3 cột đầu tiên là biến định danh (nominal): mô tả 4 mùa trong năm, kích thước của sông và tốc độ nước của sông.
+
+			+ 8 biến còn lại là giá trị của các thông số hóa học khác nhau được đo trong mẫu nước: Giá trị pH tối đa, Giá trị tối thiểu của O2 (oxy), Giá trị trung bình của Cl(clorua), Giá trị trung bình của NO−3 (nitrat),
+Giá trị trung bình của amoni, Trung bình của orthophosphat, rung bình của tổng PO4 (phốt phát), Ý nghĩa của chất diệp lục.
+
+			+ 7 cột tiếp theo là tần số suất xuất hiện 7 loại tảo có hại.
+
+		* Eval.txt (được coi như là test set): Có cấu trúc như tập “Analysis.txt” nhưng bỏ qua 7 cột tần suất của tảo(140 mẫu nước). Mục tiêu chính của nghiên cứu là dự đoán tần 
+số xuất hiện của 7 loại tảo có hại trong 140 mẫu nước này.
+		*"Sols.txt": chứa tần suất tảo của 140 mẫu nước của "Eval.txt", tệp này dùng để kiểm định kết quả tần suất sau khi dự đoán được (sau khi dự đoán
+xong mới được sử dụng).
+	- Mô tả về độ đo dùng để đánh giá kết quả: Sử dụng 11 cột biến đầu tiên để dự đoán tần số tương ứng 7 cột tiếp theo trong tệp Eval.txt.
+
+3. Giải pháp
+	- Nhóm dự định dùng những phương pháp, thuật toán nào để giải quyết bài toán đó.
+		*Mục tiêu chính của nghiên cứu này là thu được các dự đoán về giá trị tần số của bảy loại tảo trong một bộ 140 mẫu nước. Đây là một nhiệm vụ hồi quy tuyến tính
+lấy mô hình dự đoán bằng thuật toán: 
+			+ Hồi qui tuyến tính nhiều biến: Mục tiêu của hồi quy tuyến tính nhiều (MLR) là để mô hình hóa các mối quan hệ tuyến tính giữa các biến giải thích (độc lập) và biến phản ứng (phụ thuộc).
+Từ đó kiểm tra mô hình này có ý nghĩa hay không?(thông qua bảng ANOVA) nếu giá trị Sig nhỏ hơn 0.1,0.05 hoặc 0.001 thì khẳng định mô hình có ý nghĩa thống kê.
+
+			+ Cây hồi qui: đây là thuật toán cho hiệu suất tốt so với một số phương pháp tiếp cận khác thông qua phân rã 
+các dữ liệu không tương thích để đưa ra mô hình hoá trực quan nhất. Thuật toán sử dụng một hàm randomForest() để lấy các dự đoán bằng cách 
+lấy trung bình các dự đoán của các cây trong nhóm.
+	
+		* Sau khi có hai mô hình dự đoán, ta tiến hành đánh giá hiệu suất dự đoán của hai mô hình và so sánh nó. Dự đoán cho bảy loại tảo bằng cách chọn ra bốn mô hình tốt nhất sử dụng các training data có sẵn 
+để tính test set(bốn mô hình được lấy từ the cross-validation process )  => có một danh sách với bảy mô hình thu được cho mỗi loại tảo và từ đó đưa ra dự đoán cho tập test set
+so sánh các dự đoán này với các giá trị thực để có được một số phản hồi về chất lượng của phương pháp tiếp cận của mà mình đã chọn có thực sự phù hợp từ đó đưa ra Dự đoán cho bảy loại tảo
+	
+
+4. Thực nghiệm
+	- Nhóm dự định thực nghiệm như thế nào?
+		- Tiền xử lý dữ liệu thế nào? (trả lời nếu có thể)
+			Filtering Attributes: Chọn các thuộc tính phù hợp với mô hình
+			Filtering samples: Lọc các mẫu (instances, patterns) dữ liệu cho mô hình
+			Clean data: Làm sạch dữ liệu như xóa bỏ các dữ liệu bất thường (Outlier) 
+			Transformation: Chuyển đổi dữ liệu cho phù hợp với các mô hình như chuyển đổi dữ liệu từ numeric qua nomial hay ordinal
+			Discretization (rời rạc hóa dữ liệu): Nếu bạn có dữ liệu liên tục nhưng một vài mô hình chỉ áp dụng cho các dữ liệu rời rạc (như luật kết hợp chẳn hạn) thì bạn phải thực hiện việc rời rạc hóa dữ liệu.
+		- Chạy những thuật toán nào, tham số ra sao?
+			+ Lọc đơn giản dựa trên thuộc tính phân phối
+			+ Lọc ANOVA
+			+ Lọc bằng Random Forests
+			+ Lọc bằng Clustering Ensembles
+	- Nhóm dự định tinh chỉnh các tham số và đánh giá kết quả thế nào? (trả lời nếu có thể)
+
+5. Phác thảo kế hoạch làm việc (plan)
+	- Nhóm dự định phân chia công việc như thế nào?
+		*Phân chia công việc: TẠM THỜI
+		1. Lựa chọn đề tài, tìm hiểu tập dữ liệu và định hướng thực hiện nghiên cứu: Cả nhóm
+		2. Tiền xử lí dữ liệu: 75-Phan Thành Trung-18133059
+		3. Dựa trên mục tiêu nghiên cứu đưa ra phương pháp/mô hình cụ thể, chủ yếu là đưa ra một dự đoán có ích: 41-Lê Đỗ Trà My-18133030, 43-Võ Thị Thanh Ngân-18133033, 39-Huỳnh Thị Hương Ly-18133029
+		4. Kiểm tra kết quả nghiên cứu: Cả nhóm
+		5. Chuẩn bị bài báo cáo và bản trình bày: 75-Phan Thành Trung-18133059, 
